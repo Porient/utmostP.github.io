@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '2G6QWX559V',
+      apiKey: '9d034b54578638b3b7c8da685738b821',
+      indexName: 'myBlog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“ ${query} ”的文章","hits_stats":"共找到 ${hits} 篇文章, 用时 ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在学习吴恩达老师的机器学习教程时，发现一个问题：虽然吴恩达老师的的课程通俗易懂，但是对想要系统的构建机器学习流程却不太有利。 这一部分在吴恩达老师的课程中出现在有监督学习近乎结束的部分，老师将其作为经验之谈，但笔者认为在机器学习过程中，从无到有，需要对整个流程有着一个大概的了解。故而，综合吴恩达老师以及周志华老师的机器学习教程，我将其作为学习机器学习的开端。 [TOC] 首先做什么选择并表达特征向">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习（1）——机器学习系统的设计和评估">
+<meta property="og:url" content="http://yoursite.com/2018/09/08/机器学习（1）——机器学习系统的设计和评估/index.html">
+<meta property="og:site_name" content="utmostP的个人博客">
+<meta property="og:description" content="在学习吴恩达老师的机器学习教程时，发现一个问题：虽然吴恩达老师的的课程通俗易懂，但是对想要系统的构建机器学习流程却不太有利。 这一部分在吴恩达老师的课程中出现在有监督学习近乎结束的部分，老师将其作为经验之谈，但笔者认为在机器学习过程中，从无到有，需要对整个流程有着一个大概的了解。故而，综合吴恩达老师以及周志华老师的机器学习教程，我将其作为学习机器学习的开端。 [TOC] 首先做什么选择并表达特征向">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="c:/Users/Lin/AppData/Local/Temp/1536463385143.png">
+<meta property="og:image" content="c:/Users/Lin/AppData/Local/Temp/1536464597400.png">
+<meta property="og:image" content="c:/Users/Lin/AppData/Local/Temp/1536464617273.png">
+<meta property="og:updated_time" content="2018-09-09T06:04:34.310Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习（1）——机器学习系统的设计和评估">
+<meta name="twitter:description" content="在学习吴恩达老师的机器学习教程时，发现一个问题：虽然吴恩达老师的的课程通俗易懂，但是对想要系统的构建机器学习流程却不太有利。 这一部分在吴恩达老师的课程中出现在有监督学习近乎结束的部分，老师将其作为经验之谈，但笔者认为在机器学习过程中，从无到有，需要对整个流程有着一个大概的了解。故而，综合吴恩达老师以及周志华老师的机器学习教程，我将其作为学习机器学习的开端。 [TOC] 首先做什么选择并表达特征向">
+<meta name="twitter:image" content="c:/Users/Lin/AppData/Local/Temp/1536463385143.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="utmostP的个人博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/08/机器学习（1）——机器学习系统的设计和评估/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>机器学习（1）——机器学习系统的设计和评估 | utmostP的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <!--
+    <a href="https://github.com/utmostP"><img style="position: absolute; 
+    top: 0; right: 0; border: 0;" 
+    src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
+     alt="Fork me on GitHub"></a>
+     -->
+
+     <!--github链接-->
+     <a href="https://github.com/utmostP" class="github-corner" aria-label="View source on Github">
+     <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; 
+     position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+     <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+     <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" 
+     fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+     <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">utmostP的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/08/机器学习（1）——机器学习系统的设计和评估/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="utmostP">
+      <meta itemprop="description" content="Just a coder">
+      <meta itemprop="image" content="/images/portrait.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="utmostP的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">机器学习（1）——机器学习系统的设计和评估
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-08 15:39:59" itemprop="dateCreated datePublished" datetime="2018-09-08T15:39:59+08:00">2018-09-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-09-09 14:04:34" itemprop="dateModified" datetime="2018-09-09T14:04:34+08:00">2018-09-09</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/08/机器学习（1）——机器学习系统的设计和评估/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/09/08/机器学习（1）——机器学习系统的设计和评估/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在学习吴恩达老师的机器学习教程时，发现一个问题：虽然吴恩达老师的的课程通俗易懂，但是对想要系统的构建机器学习流程却不太有利。</p>
+<p>这一部分在吴恩达老师的课程中出现在有监督学习近乎结束的部分，老师将其作为经验之谈，但笔者认为在机器学习过程中，从无到有，需要对整个流程有着一个大概的了解。故而，综合吴恩达老师以及周志华老师的机器学习教程，我将其作为学习机器学习的开端。</p>
+<p>[TOC]</p>
+<h2 id="首先做什么"><a href="#首先做什么" class="headerlink" title="首先做什么"></a>首先做什么</h2><h3 id="选择并表达特征向量"><a href="#选择并表达特征向量" class="headerlink" title="选择并表达特征向量"></a>选择并表达特征向量</h3><p>在构建机器学习算法的时候，我们可以做很多事：</p>
+<ol>
+<li>收集更多数据，增加训练集样本的数量</li>
+<li>根据不同的信息源（如正文信息和摘要信息）挑选出一系列复杂的特征向量</li>
+<li>考虑增加算法的稳定性（如对拼写错误的容忍）</li>
+</ol>
+<p>但要注意的是在一开始，我们会获得一个初始数据集，首先要做的就是如何根据数据集<strong>选择并表达特征向量</strong></p>
+<h3 id="快速构建学习算法"><a href="#快速构建学习算法" class="headerlink" title="快速构建学习算法"></a>快速构建学习算法</h3><p>在并不知道应该从什么方面提高算法的表现时，应有这么一种思想：</p>
+<blockquote>
+<p>避免过早优化</p>
+</blockquote>
+<p>凭直觉的得出的东西是十分局限的，我们需要用分析来指导算法的改良。</p>
+<p>但首先，我们需要快速构建一个学习算法，我们可以通过下列步骤来了解机器学习的一般过程：</p>
+<ol>
+<li>实现一个简单的算法，并用交叉验证集数据测试算法</li>
+<li>通过学习曲线或其他诊断方法，决定下一步该做什么</li>
+<li>进行误差分析：人工检查交叉验证集中我们算法中产生误差的实例，看看这些实例是否有着某种系统化趋势。</li>
+<li>循环2、3步直到得到一个较为满意的算法</li>
+</ol>
+<h2 id="模型的评估与选择"><a href="#模型的评估与选择" class="headerlink" title="模型的评估与选择"></a>模型的评估与选择</h2><h3 id="评估方法"><a href="#评估方法" class="headerlink" title="评估方法"></a>评估方法</h3><p>我们需要对算法的<strong>泛化误差</strong>进行评估进而指导模型的选择</p>
+<h4 id="留出法"><a href="#留出法" class="headerlink" title="留出法"></a>留出法</h4><ol>
+<li>直接将数据结构划分为两个互斥的集合：训练集（70%）和测试集（30%）</li>
+<li>通过<strong>分层采样</strong>的方式来尽可能保证数据分布的一致性</li>
+<li>采用若干次随机划分、重复进行试验评估后取平均值作为泛化误差的评估结果</li>
+</ol>
+<h4 id="交叉验证法"><a href="#交叉验证法" class="headerlink" title="交叉验证法"></a>交叉验证法</h4><ol>
+<li>将数据集划分为k个大小相似的互斥子集，k-1个作为训练集，余下的作为测试集。从而可进行k次训练和测试，最终返回k个测试结果的平均值（k折交叉验证）</li>
+<li>通过<strong>分层采样</strong>的方式来尽可能保证数据分布的一致性</li>
+<li>k折交叉验证通常要随机使用不同的划分重复p次，又被称作p次k折交叉验证（k的常用取值为5、10、20）</li>
+</ol>
+<h4 id="留一法"><a href="#留一法" class="headerlink" title="留一法"></a>留一法</h4><ol>
+<li>特殊的交叉验证法，取k=样本数量</li>
+<li>由于训练集与初始集只相差一个样本，故而被认为比较准确</li>
+<li>在数据集较大时，开销难以容忍</li>
+</ol>
+<h4 id="自助法"><a href="#自助法" class="headerlink" title="自助法"></a>自助法</h4><ol>
+<li>每次随机从初始集D中挑选一个样本，<strong>拷贝</strong>至D<sup>‘</sup>中，最终大约有36.8%的样本未被采样</li>
+<li>将D<sup>‘</sup>作为训练集，D-D<sup>‘</sup>作为测试集（包外估计）</li>
+<li>在数据集较小，难以划分时较有用；在数据量充足时，通常使用留出法和交叉验证法</li>
+</ol>
+<h3 id="调参与获得最终模型"><a href="#调参与获得最终模型" class="headerlink" title="调参与获得最终模型"></a>调参与获得最终模型</h3><h4 id="调参"><a href="#调参" class="headerlink" title="调参"></a>调参</h4><p>大多数算法都有参数需要设定，常用的做法是：对每一个参数选定一个<strong>范围</strong>和<strong>步长</strong>，以不同的参数组合考察模型。</p>
+<h4 id="最终模型"><a href="#最终模型" class="headerlink" title="最终模型"></a>最终模型</h4><p>在模型选择完成后，学习算法和参数配置已经选定，此时应该用<strong>初始数据集D</strong>重新训练模型，这才是是最终提交的算法模型</p>
+<h3 id="误差分析"><a href="#误差分析" class="headerlink" title="误差分析"></a>误差分析</h3><p>误差分析可以使我们发现算法模型的不足，指导下一步的改良</p>
+<h4 id="回归问题的性能度量"><a href="#回归问题的性能度量" class="headerlink" title="回归问题的性能度量"></a>回归问题的性能度量</h4><h5 id="均方误差"><a href="#均方误差" class="headerlink" title="均方误差"></a>均方误差</h5><p>最常用的性能度量</p>
+<p>$E(f:D)=\frac{1}{m}\sum_{1}^{m}(f(x_{i})-y_{i})^{2}$</p>
+<p>Loss函数通常基于均方误差构建</p>
+<h4 id="分类问题的性能度量"><a href="#分类问题的性能度量" class="headerlink" title="分类问题的性能度量"></a>分类问题的性能度量</h4><h5 id="错误率和精度"><a href="#错误率和精度" class="headerlink" title="错误率和精度"></a>错误率和精度</h5><p>最常用的性能度量</p>
+<blockquote>
+<p>错误率 = $\frac{分类错误样本数}{样本总数}$ </p>
+<p>精度 = $\frac{分类正确样本数}{样本总数}$ = 1-错误率 </p>
+</blockquote>
+<h5 id="查准率（Precision）和查全率（Recall）与-F-beta-度量"><a href="#查准率（Precision）和查全率（Recall）与-F-beta-度量" class="headerlink" title="查准率（Precision）和查全率（Recall）与$F_{\beta}$度量"></a>查准率（Precision）和查全率（Recall）与$F_{\beta}$度量</h5><p>预测结果（混淆矩阵）有四种情况：</p>
+<blockquote>
+<p>TP：预测为正例，实际为正例</p>
+<p>TN：预测为反例，实际为反例</p>
+<p>FP： 预测为正例，实际为反例</p>
+<p>FN：预测为反例，实际为正例</p>
+</blockquote>
+<p>查准率$P=\frac{TP}{TP+FP}$ =预测结果为正例中预测正确的概率</p>
+<p>查全率$R=\frac{TP}{TP+FN}$ =实际结果为正例中预测正确的概率</p>
+<p>P和R通常是矛盾的，需要<strong>权衡</strong>P和R：</p>
+<h6 id="通过P-R曲线寻找BEP平衡点"><a href="#通过P-R曲线寻找BEP平衡点" class="headerlink" title="通过P-R曲线寻找BEP平衡点"></a>通过P-R曲线寻找BEP平衡点</h6><p>P-R曲线：</p>
+<blockquote>
+<p>根据预测结果对样例排序，排在前面的是“最可能”为正例的样本</p>
+<p>按此顺序把样本作为正例进行预测（将其正例概率作为预测阈值），每次计算出当前的查全率和查准率</p>
+<p>以查全率R为横轴，查准率P为纵轴画出P-R曲线</p>
+</blockquote>
+<p><strong>BEP</strong>平衡点是P-R图中<strong>查准率=查全率</strong>时的取值，可根据BEP平衡点的大小来判断算法模型的优劣；也可通过P-R曲线底下的<strong>面积大小</strong>判断，通常越大越好。 </p>
+<h6 id="F-beta-度量"><a href="#F-beta-度量" class="headerlink" title="$F_{\beta}$度量"></a>$F_{\beta}$度量</h6><p>$F_{\beta}=\frac{(1+\beta^{2})<em>P</em>R}{(\beta^{2}*P)+R}$</p>
+<p>$F_{\beta}$度量可以表现出对查准率/查全率的重视程度的偏好</p>
+<p>$\beta&gt;1$时，查全率有更大影响；</p>
+<p>$\beta&lt;1$时，查准率有更大影响；</p>
+<p>$\beta=1$为一般情况下综合考虑查准率和查全率，相比于BEP平衡点更常用</p>
+<p>$F_{1}=\frac{2PR}{P+R}$</p>
+<h6 id="多分类问题的-F-1-度量"><a href="#多分类问题的-F-1-度量" class="headerlink" title="多分类问题的$F_{1}$度量"></a>多分类问题的$F_{1}$度量</h6><p>1.先对各个混淆矩阵计算出P、R，再计算宏查准率（macro-P），宏查全率（macro-R）以及宏$F_{1}$</p>
+<p>macro-P = $\frac{1}{n}\sum_{1}^{n}P_{i}$</p>
+<p>macro-R = $\frac{1}{n}\sum_{1}^{n}R_{i}$</p>
+<p>macro-$F_{1}$ = $\frac{2<em>macro-P</em>macro-R}{macro-P+macro-R}$</p>
+<p>2.先将各混淆矩阵的对应元素平均，得到TP、FP、TN、FN的平均值，再计算出微查准率（micro-P）、微查全率（micro-R）、微$F_{1}$</p>
+<p>micro-P = $\frac{\bar{TP}}{\bar{TP}+\bar{FP}}$</p>
+<p>micro-R = $\frac{\bar{TP}}{\bar{TP}+\bar{FN}}$</p>
+<p>micro-$F_{1}$ = $\frac{2<em>micro-P</em>micro-R}{micro-P+micro-R}$</p>
+<h5 id="ROC与AUC"><a href="#ROC与AUC" class="headerlink" title="ROC与AUC"></a>ROC与AUC</h5><p>..待补充</p>
+<h5 id="代价敏感错误率与代价曲线"><a href="#代价敏感错误率与代价曲线" class="headerlink" title="代价敏感错误率与代价曲线"></a>代价敏感错误率与代价曲线</h5><p>..待补充</p>
+<h3 id="通常情况下的模型选择"><a href="#通常情况下的模型选择" class="headerlink" title="通常情况下的模型选择"></a>通常情况下的模型选择</h3><h4 id="对于回归和分类问题"><a href="#对于回归和分类问题" class="headerlink" title="对于回归和分类问题"></a>对于回归和分类问题</h4><p>虽然模型的选择与评估的方法很多，但通常情况下</p>
+<p>我们将数据集划分：</p>
+<ol>
+<li>60% 作为训练集</li>
+<li>20% 作为交叉验证集</li>
+<li>20% 作为测试集</li>
+</ol>
+<p>然后从m种不同的模型挑选出较优的一种：</p>
+<ol>
+<li>使用训练集训练出m个模型</li>
+<li>从m个模型分别预测交叉验证集，求得<strong>交叉验证误差</strong>（即代价函数的值）</li>
+<li>选取交叉验证误差最小的模型</li>
+</ol>
+<h4 id="对于神经网络中隐藏层数的选择问题"><a href="#对于神经网络中隐藏层数的选择问题" class="headerlink" title="对于神经网络中隐藏层数的选择问题"></a>对于神经网络中隐藏层数的选择问题</h4><p>通常，将神经网络的隐藏层层数从一层开始逐渐增加。</p>
+<p>针对不同的隐藏层层数训练神经网络，选择交叉验证误差最小的的神经网络。</p>
+<h2 id="下一步要做什么"><a href="#下一步要做什么" class="headerlink" title="下一步要做什么"></a>下一步要做什么</h2><p>我们已经挑选并训练了一个学习算法，如果现在想要改进算法，那么要做什么呢？</p>
+<p>我们可能有很多个选择：</p>
+<ol>
+<li>获得更多的训练实例</li>
+<li>尝试减少特征的数量</li>
+<li>尝试获得更多的特征</li>
+<li>尝试增加多项式特征</li>
+<li>尝试减少正则化程度$\lambda$</li>
+<li>尝试增加正则化程度$\lambda$</li>
+</ol>
+<p>我们需要一些方法来确定下一步该做什么</p>
+<h3 id="判断下一步要做什么"><a href="#判断下一步要做什么" class="headerlink" title="判断下一步要做什么"></a>判断下一步要做什么</h3><h4 id="通过误差诊断方差与偏差"><a href="#通过误差诊断方差与偏差" class="headerlink" title="通过误差诊断方差与偏差"></a>通过误差诊断方差与偏差</h4><p>当运行一个学习算法时，如果这个算法的表现不理想，那么多半是两种情况：</p>
+<ol>
+<li>偏差比较大</li>
+<li>方差比较大</li>
+</ol>
+<p>我们需要判断是反差还是偏差。</p>
+<p>通常，我们可以将训练集和交叉验证集的<code>Loss函数误差</code>与<code>多项式次数d</code>（与<code>特征数</code>相关）绘制在同一张图表上来帮助分析：</p>
+<p><img src="C:\Users\Lin\AppData\Local\Temp\1536463385143.png" alt="1536463385143"></p>
+<p>对于训练集，当d较小时，模型拟合程度较低，误差较大；随着d的增长，拟合程度提高，误差减小。</p>
+<p>对于交叉验证集，当d较小时，模型拟合程度低，误差较大；但是随着d的增长，误差呈现先减小后增大的趋势。</p>
+<p>可以得出以下结论：</p>
+<blockquote>
+<p>训练集误差和交叉验证集误差近似时：偏差/欠拟合</p>
+<p>交叉验证集误差远大于训练集误差时：方差/过拟合</p>
+</blockquote>
+<h4 id="选择合适的正则化参数避免高偏差-高方差"><a href="#选择合适的正则化参数避免高偏差-高方差" class="headerlink" title="选择合适的正则化参数避免高偏差/高方差"></a>选择合适的正则化参数避免高偏差/高方差</h4><p>当出现欠拟合时，需要一个较大的$\lambda$值；当出现过拟合时，需要一个较小的$\lambda$值。</p>
+<p>首先我们选择一系列$\lambda$值，通常是0-10之间呈现2倍关系的值，如：</p>
+<blockquote>
+<p>0, 0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28, 2.56, 5.12, 10</p>
+</blockquote>
+<p>同样，我们将数据集划分为：训练集、交叉验证集、测试集</p>
+<p>选择$\lambda$的方法为：</p>
+<ol>
+<li>使用训练集训练出多种不同程度的正则化模型</li>
+<li>每一个模型分别对交叉验证集计算得出交叉验证误差</li>
+<li>选择得出交叉验证误差最小的模型</li>
+</ol>
+<h4 id="通过学习曲线识别偏差-方差问题"><a href="#通过学习曲线识别偏差-方差问题" class="headerlink" title="通过学习曲线识别偏差/方差问题"></a>通过学习曲线识别偏差/方差问题</h4><p>学习曲线的思想来自于：</p>
+<blockquote>
+<p>当训练较少行数据的时候，训练的模型能够非常完美地适应较少的训练数据，但是训练出来的模型却不能很好地适应交叉验证集数据或测试集数据</p>
+</blockquote>
+<p>高偏差的情况：</p>
+<p><img src="C:\Users\Lin\AppData\Local\Temp\1536464597400.png" alt="1536464597400"></p>
+<p>高方差的情况：</p>
+<p><img src="C:\Users\Lin\AppData\Local\Temp\1536464617273.png" alt="1536464617273"></p>
+<p>可以看出，在增大数据集规模的情况下，高偏差并不会得到改善，而高方差会得到改善。</p>
+<p>从另一个角度看，在高方差/过拟合的情况下，增加更多的数据到训练集可能可以提高算法的效果。</p>
+<h4 id="什么时候选择增加数据而不是修改算法"><a href="#什么时候选择增加数据而不是修改算法" class="headerlink" title="什么时候选择增加数据而不是修改算法"></a>什么时候选择增加数据而不是修改算法</h4><p>当能通过以下两个假设时，仅仅只是增大数据量通常会使得算法具有更好的表现：</p>
+<ol>
+<li>构建的<strong>特征向量x</strong>包含了足够的信息，可以帮助我们准确地预测<strong>y</strong>值</li>
+<li>训练集比参数的数量要大得多时，算法不太可能出现过度拟合（增加数据量可以降低方差）</li>
+</ol>
+<p>我们可以通过构建一个具有很多参数的学习算法来保证算法的低偏差，然后通过一个非常大的训练集来使得方差降低，进而得到一个偏差/方差都较低的学习算法</p>
+<h3 id="决定下一步要做什么"><a href="#决定下一步要做什么" class="headerlink" title="决定下一步要做什么"></a>决定下一步要做什么</h3><p>通过上面几种方法，回顾之前提出的可能性，我们可以通过证据指导我们下一步该做什么</p>
+<h4 id="解决高方差"><a href="#解决高方差" class="headerlink" title="解决高方差"></a>解决<strong>高方差</strong></h4><ol>
+<li>尝试获得<strong>更多</strong>的训练实例</li>
+<li>尝试<strong>减少</strong>特征的数量</li>
+<li>尝试<strong>增加</strong>正则化程度</li>
+</ol>
+<h4 id="解决高偏差："><a href="#解决高偏差：" class="headerlink" title="解决高偏差："></a>解决<strong>高偏差</strong>：</h4><ol>
+<li>尝试<strong>增加</strong>特征的数量</li>
+<li>尝试<strong>增加</strong>多项式特征（如x1*x2）</li>
+<li>尝试<strong>减少</strong>正则化程度</li>
+</ol>
+<h4 id="对于神经网络"><a href="#对于神经网络" class="headerlink" title="对于神经网络:"></a>对于<strong>神经网络:</strong></h4><ol>
+<li><strong>较小</strong>的神经网络容易导致<strong>高偏差/欠拟合</strong></li>
+<li><strong>较大</strong>的神经网络容易导致<strong>高方差/过拟合</strong></li>
+<li>通常选择<strong>较大</strong>的神经网络并采用<strong>正则化</strong>的方式处理会比使用<strong>较小</strong>的神经网络效果更好。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+    <!--添加文末标记-->
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #555;font-size:14px;">-------------The End-------------</div>
+    
+</div>
+
+      
+    </div>
+
+    <!--增加版权信息-->
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/09/08/机器学习（1）——机器学习系统的设计和评估/">机器学习（1）——机器学习系统的设计和评估</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 utmostP 的个人博客">utmostP</a></p>
+  <p><span>发布时间:</span>2018年09月08日 - 15:09</p>
+  <p><span>最后更新:</span>2018年09月09日 - 14:09</p>
+  <p><span>原始链接:</span><a href="/2018/09/08/机器学习（1）——机器学习系统的设计和评估/" title="机器学习（1）——机器学习系统的设计和评估">http://yoursite.com/2018/09/08/机器学习（1）——机器学习系统的设计和评估/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://yoursite.com/2018/09/08/机器学习（1）——机器学习系统的设计和评估/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+    });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>救救孩子!</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatPay.png" alt="utmostP 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.jpg" alt="utmostP 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+        <div class="post-widgets">
+        
+          <div class="wp_rating">
+            <div id="wpac-rating"></div>
+          </div>
+        
+
+        
+
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/07/hexo指令/" rel="next" title="hexo指令">
+                <i class="fa fa-chevron-left"></i> hexo指令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/portrait.jpg"
+                alt="utmostP" />
+            
+              <p class="site-author-name" itemprop="name">utmostP</p>
+              <p class="site-description motion-element" itemprop="description">Just a coder</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/utmostP" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="q496612585@qq.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://stackoverflow.com/users/10329691/utmostp" target="_blank" title="StackOverflow"><i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://juejin.im/user/5b3f6d575188251ac062e925" target="_blank" title="掘金"><i class="fa fa-fw fa-book"></i>掘金</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.track-blog.com" title="Track-blog" target="_blank">Track-blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#首先做什么"><span class="nav-number">1.</span> <span class="nav-text">首先做什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选择并表达特征向量"><span class="nav-number">1.1.</span> <span class="nav-text">选择并表达特征向量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速构建学习算法"><span class="nav-number">1.2.</span> <span class="nav-text">快速构建学习算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型的评估与选择"><span class="nav-number">2.</span> <span class="nav-text">模型的评估与选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#评估方法"><span class="nav-number">2.1.</span> <span class="nav-text">评估方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#留出法"><span class="nav-number">2.1.1.</span> <span class="nav-text">留出法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉验证法"><span class="nav-number">2.1.2.</span> <span class="nav-text">交叉验证法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#留一法"><span class="nav-number">2.1.3.</span> <span class="nav-text">留一法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自助法"><span class="nav-number">2.1.4.</span> <span class="nav-text">自助法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调参与获得最终模型"><span class="nav-number">2.2.</span> <span class="nav-text">调参与获得最终模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#调参"><span class="nav-number">2.2.1.</span> <span class="nav-text">调参</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最终模型"><span class="nav-number">2.2.2.</span> <span class="nav-text">最终模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#误差分析"><span class="nav-number">2.3.</span> <span class="nav-text">误差分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#回归问题的性能度量"><span class="nav-number">2.3.1.</span> <span class="nav-text">回归问题的性能度量</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#均方误差"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">均方误差</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分类问题的性能度量"><span class="nav-number">2.3.2.</span> <span class="nav-text">分类问题的性能度量</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#错误率和精度"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">错误率和精度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#查准率（Precision）和查全率（Recall）与-F-beta-度量"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">查准率（Precision）和查全率（Recall）与$F_{\beta}$度量</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#通过P-R曲线寻找BEP平衡点"><span class="nav-number">2.3.2.2.1.</span> <span class="nav-text">通过P-R曲线寻找BEP平衡点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#F-beta-度量"><span class="nav-number">2.3.2.2.2.</span> <span class="nav-text">$F_{\beta}$度量</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#多分类问题的-F-1-度量"><span class="nav-number">2.3.2.2.3.</span> <span class="nav-text">多分类问题的$F_{1}$度量</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ROC与AUC"><span class="nav-number">2.3.2.3.</span> <span class="nav-text">ROC与AUC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#代价敏感错误率与代价曲线"><span class="nav-number">2.3.2.4.</span> <span class="nav-text">代价敏感错误率与代价曲线</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通常情况下的模型选择"><span class="nav-number">2.4.</span> <span class="nav-text">通常情况下的模型选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对于回归和分类问题"><span class="nav-number">2.4.1.</span> <span class="nav-text">对于回归和分类问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对于神经网络中隐藏层数的选择问题"><span class="nav-number">2.4.2.</span> <span class="nav-text">对于神经网络中隐藏层数的选择问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下一步要做什么"><span class="nav-number">3.</span> <span class="nav-text">下一步要做什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#判断下一步要做什么"><span class="nav-number">3.1.</span> <span class="nav-text">判断下一步要做什么</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通过误差诊断方差与偏差"><span class="nav-number">3.1.1.</span> <span class="nav-text">通过误差诊断方差与偏差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选择合适的正则化参数避免高偏差-高方差"><span class="nav-number">3.1.2.</span> <span class="nav-text">选择合适的正则化参数避免高偏差/高方差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过学习曲线识别偏差-方差问题"><span class="nav-number">3.1.3.</span> <span class="nav-text">通过学习曲线识别偏差/方差问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么时候选择增加数据而不是修改算法"><span class="nav-number">3.1.4.</span> <span class="nav-text">什么时候选择增加数据而不是修改算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#决定下一步要做什么"><span class="nav-number">3.2.</span> <span class="nav-text">决定下一步要做什么</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决高方差"><span class="nav-number">3.2.1.</span> <span class="nav-text">解决高方差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决高偏差："><span class="nav-number">3.2.2.</span> <span class="nav-text">解决高偏差：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对于神经网络"><span class="nav-number">3.2.3.</span> <span class="nav-text">对于神经网络:</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">utmostP</span>
+
+  
+
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.4.1</div>
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: 'utmostP',
+            repo: 'utmostP.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '405af6b54d3a606b0a9226f9e2c722f772e7b81f',
+            
+                client_id: 'b6d352e9da7aa097ae7c'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=6.4.1"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: 13699,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
