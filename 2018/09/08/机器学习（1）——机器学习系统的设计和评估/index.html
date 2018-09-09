@@ -116,14 +116,14 @@
 <meta property="og:site_name" content="utmostP的个人博客">
 <meta property="og:description" content="在学习吴恩达老师的机器学习教程时，发现一个问题：虽然吴恩达老师的的课程通俗易懂，但是对想要系统的构建机器学习流程却不太有利。 这一部分在吴恩达老师的课程中出现在有监督学习近乎结束的部分，老师将其作为经验之谈，但笔者认为在机器学习过程中，从无到有，需要对整个流程有着一个大概的了解。故而，综合吴恩达老师以及周志华老师的机器学习教程，我将其作为学习机器学习的开端。 [TOC] 首先做什么选择并表达特征向">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2018/09/08/images/1536463385143.png">
-<meta property="og:image" content="http://yoursite.com/2018/09/08/images/1536464597400.png">
-<meta property="og:image" content="http://yoursite.com/2018/09/08/images/1536464617273.png">
-<meta property="og:updated_time" content="2018-09-09T06:45:26.714Z">
+<meta property="og:image" content="http://yoursite.com/2018/09/images/1536463385143.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/images/1536464597400.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/images/1536464617273.png">
+<meta property="og:updated_time" content="2018-09-09T06:55:00.545Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习（1）——机器学习系统的设计和评估">
 <meta name="twitter:description" content="在学习吴恩达老师的机器学习教程时，发现一个问题：虽然吴恩达老师的的课程通俗易懂，但是对想要系统的构建机器学习流程却不太有利。 这一部分在吴恩达老师的课程中出现在有监督学习近乎结束的部分，老师将其作为经验之谈，但笔者认为在机器学习过程中，从无到有，需要对整个流程有着一个大概的了解。故而，综合吴恩达老师以及周志华老师的机器学习教程，我将其作为学习机器学习的开端。 [TOC] 首先做什么选择并表达特征向">
-<meta name="twitter:image" content="http://yoursite.com/2018/09/08/images/1536463385143.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/09/images/1536463385143.png">
 
 
 
@@ -420,7 +420,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-09-09 14:45:26" itemprop="dateModified" datetime="2018-09-09T14:45:26+08:00">2018-09-09</time>
+                <time title="修改时间：2018-09-09 14:55:00" itemprop="dateModified" datetime="2018-09-09T14:55:00+08:00">2018-09-09</time>
               
             
           </span>
@@ -609,7 +609,7 @@
 </ol>
 <p>我们需要判断是反差还是偏差。</p>
 <p>通常，我们可以将训练集和交叉验证集的<code>Loss函数误差</code>与<code>多项式次数d</code>（与<code>特征数</code>相关）绘制在同一张图表上来帮助分析：</p>
-<p><img src="..\images\1536463385143.png" alt="Loss函数误差随多项式次数d变化图"></p>
+<p><img src="..\..\images\1536463385143.png" alt="Loss函数误差随多项式次数d变化图"></p>
 <p>对于训练集，当d较小时，模型拟合程度较低，误差较大；随着d的增长，拟合程度提高，误差减小。</p>
 <p>对于交叉验证集，当d较小时，模型拟合程度低，误差较大；但是随着d的增长，误差呈现先减小后增大的趋势。</p>
 <p>可以得出以下结论：</p>
@@ -634,9 +634,9 @@
 <p>当训练较少行数据的时候，训练的模型能够非常完美地适应较少的训练数据，但是训练出来的模型却不能很好地适应交叉验证集数据或测试集数据</p>
 </blockquote>
 <p>高偏差的情况：</p>
-<p><img src="..\images\1536464597400.png" alt="高偏差图"></p>
+<p><img src="..\..\images\1536464597400.png" alt="高偏差图"></p>
 <p>高方差的情况：</p>
-<p><img src="..\images\1536464617273.png" alt="高方差图"></p>
+<p><img src="..\..\images\1536464617273.png" alt="高方差图"></p>
 <p>可以看出，在增大数据集规模的情况下，高偏差并不会得到改善，而高方差会得到改善。</p>
 <p>从另一个角度看，在高方差/过拟合的情况下，增加更多的数据到训练集可能可以提高算法的效果。</p>
 <h4 id="什么时候选择增加数据而不是修改算法"><a href="#什么时候选择增加数据而不是修改算法" class="headerlink" title="什么时候选择增加数据而不是修改算法"></a>什么时候选择增加数据而不是修改算法</h4><p>当能通过以下两个假设时，仅仅只是增大数据量通常会使得算法具有更好的表现：</p>
